@@ -6,14 +6,14 @@ import countryList from '../templates/countryList';
 import API from './fetchCountries';
 import getRefs from './refs';
 
-const debounce = require('lodash.debounce');
+import debounce from 'lodash.debounce';
 
 const refs = getRefs();
 
-refs.$searchInput.addEventListener('input', onSearch);
+refs.$searchInput.addEventListener('input', debounce(onSearch, 500));
 
 function onSearch(e) {
-  const searchQuery = e.currentTarget.value;
+  const searchQuery = e.target.value;
 
   API(searchQuery).then(data => {
     if (data.length >= 2 && data.length <= 10) {

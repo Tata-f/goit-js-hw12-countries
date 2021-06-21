@@ -2863,15 +2863,15 @@ var _fetchCountries = _interopRequireDefault(require("./fetchCountries"));
 
 var _refs = _interopRequireDefault(require("./refs"));
 
+var _lodash = _interopRequireDefault(require("lodash.debounce"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-const debounce = require('lodash.debounce');
-
 const refs = (0, _refs.default)();
-refs.$searchInput.addEventListener('input', onSearch);
+refs.$searchInput.addEventListener('input', (0, _lodash.default)(onSearch, 500));
 
 function onSearch(e) {
-  const searchQuery = e.currentTarget.value;
+  const searchQuery = e.target.value;
   (0, _fetchCountries.default)(searchQuery).then(data => {
     if (data.length >= 2 && data.length <= 10) {
       renderCountryList(data);
@@ -2945,7 +2945,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "55861" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63992" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
