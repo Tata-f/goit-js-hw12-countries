@@ -2447,11 +2447,12 @@ exports.default = _default;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = fetchCountry;
+exports.default = fetchCountries;
 
-function fetchCountry(searchQuery) {
+function fetchCountries(searchQuery) {
   return fetch(`https://restcountries.eu/rest/v2/name/${searchQuery}`).then(response => {
-    return response.json();
+    if (response.ok) return response.json();
+    throw new Error('Error fetching data');
   }).catch(error => {
     console.error('Error: ', error);
   });
@@ -2871,40 +2872,43 @@ const refs = (0, _refs.default)();
 refs.$searchInput.addEventListener('input', (0, _lodash.default)(onSearch, 500));
 
 function onSearch(e) {
-  const searchQuery = e.target.value;
-  (0, _fetchCountries.default)(searchQuery).then(data => {
-    if (data.length >= 2 && data.length <= 10) {
-      renderCountryList(data);
-      return;
-    }
+  const searchQuery = e.target.value.trim();
+  refs.$searchInput.innerHTML = '';
 
-    if (data.length === 1) {
-      renderCountryCard(data);
-      return;
-    }
+  if (searchQuery.length < 1) {
+    return;
+  }
 
-    if (data.length > 10) {
-      (0, _core.error)({
-        title: false,
-        text: 'Too many maches',
-        sticker: false,
-        maxTextHeight: null,
-        closerHover: false,
-        animation: 'fade',
-        mouseReset: false,
-        delay: 2000
-      });
-    }
-  });
+  (0, _fetchCountries.default)(searchQuery).then(createMarkup);
 }
 
-function renderCountryCard(country) {
-  const markup = (0, _countryCard.default)(country);
-  refs.$cardContainer.innerHTML = markup;
-}
+function createMarkup(data) {
+  let markup = "";
 
-function renderCountryList(country) {
-  const markup = (0, _countryList.default)(country);
+  if (!data) {
+    return;
+  }
+
+  if (data.length > 1 && data.length <= 10) {
+    markup = (0, _countryList.default)(data);
+  }
+
+  if (data.length === 1) {
+    markup = (0, _countryCard.default)(data);
+  }
+
+  if (data.length > 10) {
+    (0, _core.error)({
+      title: false,
+      text: 'Too many maches',
+      sticker: false,
+      maxTextHeight: null,
+      closerHover: false,
+      mouseReset: false,
+      delay: 2000
+    });
+  }
+
   refs.$cardContainer.innerHTML = markup;
 }
 },{"@pnotify/core":"../node_modules/@pnotify/core/dist/PNotify.js","../templates/countryCard":"templates/countryCard.hbs","../templates/countryList":"templates/countryList.hbs","./fetchCountries":"javascript/fetchCountries.js","./refs":"javascript/refs.js","lodash.debounce":"../node_modules/lodash.debounce/index.js"}],"index.js":[function(require,module,exports) {
@@ -2945,7 +2949,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63992" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53973" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

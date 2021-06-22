@@ -13,16 +13,33 @@ const refs = getRefs();
 refs.$searchInput.addEventListener('input', debounce(onSearch, 500));
 
 function onSearch(e) {
-  const searchQuery = e.target.value;
+  const searchQuery = e.target.value.trim();
 
-  API(searchQuery).then(data => {
-    if (data.length >= 2 && data.length <= 10) {
-      renderCountryList(data);
+  refs.$searchInput.innerHTML = '';
+
+  if (searchQuery.length < 1) {
+    
+    return;
+  }
+
+  API(searchQuery).then(createMarkup);
+}
+
+function createMarkup(data) {
+let markup = "";
+    if (!data) {
       return;
     }
+
+    if (data.length > 1 && data.length <= 10) {
+      markup = countryList(data);
+
+
+    }
     if (data.length === 1) {
-      renderCountryCard(data);
-      return;
+      markup = countryCard(data);
+
+
     }
     if (data.length > 10) {
       error({
@@ -31,20 +48,9 @@ function onSearch(e) {
         sticker: false,
         maxTextHeight: null,
         closerHover: false,
-        animation: 'fade',
         mouseReset: false,
         delay: 2000,
       });
-    }
-  });
-}
-
-function renderCountryCard(country) {
-  const markup = countryCard(country);
-  refs.$cardContainer.innerHTML = markup;
-}
-
-function renderCountryList(country) {
-  const markup = countryList(country);
-  refs.$cardContainer.innerHTML = markup;
-}
+    } 
+    refs.$cardContainer.innerHTML = markup;
+  }
